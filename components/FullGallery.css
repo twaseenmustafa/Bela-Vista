@@ -1,0 +1,121 @@
+/* Scoped variables for the gallery page to prevent global leaks */
+.full-gallery-page {
+  --color-text: #fff;
+  --color-bg: #0F172A; /* Navy */
+  --color-link: #D4AF37; /* Gold */
+  --color-link-hover: #fff;
+  --perspective: 0px;
+  --grid-width: 100%;
+  /* Increased from 300px to 55vw to make images much larger */
+  --grid-max-width: 55vw; 
+  --grid-item-ratio: 1.2;
+  --grid-item-radius: 8px;
+  --grid-gap: 2rem;
+  --grid-columns: 2;
+  --grid-columns-full: 4;
+  --grid-rows-full: 5;
+  --grid-item-translate: 0px;
+  --grid-item-height: auto;
+}
+
+/* Responsive adjustment for mobile to maximize space */
+@media screen and (max-width: 768px) {
+  .full-gallery-page {
+    --grid-max-width: 90vw;
+    --grid-gap: 1rem;
+  }
+}
+
+.full-gallery-page .grid-container {
+  width: var(--grid-width);
+  max-width: var(--grid-max-width);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gap);
+  margin: 10vh auto;
+}
+
+/* Staggered Grid Container - The new section styles */
+.staggered-grid-container {
+    width: 100%;
+}
+
+.staggered-column {
+    will-change: transform;
+}
+
+.staggered-item-wrapper {
+    will-change: transform, opacity;
+}
+
+
+.full-gallery-page .grid__item {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  perspective: 800px; /* CRITICAL for 3D effect */
+  will-change: transform, opacity;
+}
+
+.full-gallery-page .grid__item > .grid__item-imgwrap {
+  width: 100%;
+  aspect-ratio: var(--grid-item-ratio);
+  height: var(--grid-item-height);
+  border-radius: var(--grid-item-radius);
+  transform-style: preserve-3d; /* CRITICAL for 3D effect */
+  position: relative;
+  overflow: hidden;
+  will-change: filter;
+  /* Removed background-color to prevent dark blocks on missing images */
+}
+
+.full-gallery-page .grid__item-img {
+  width: 130%;
+  height: 130%;
+  object-fit: cover; /* Replaces background-size: cover */
+  backface-visibility: hidden;
+  will-change: transform;
+  position: absolute;
+  /* Zoom effect: Make the image element larger than its container */
+  top: -15%;
+  left: -15%;
+}
+
+/* Marquee Styles */
+.full-gallery-page .mark {
+  position: fixed;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100vw;
+  left: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.full-gallery-page .mark__inner {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  position: relative;
+  transform: translateX(100vw);
+  will-change: transform;
+}
+
+.full-gallery-page .mark__inner span {
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-family: "Playfair Display", serif;
+  font-size: 6rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.15);
+}
+
+/* Helper for Split Text Animation */
+.char-span {
+  display: inline-block;
+  will-change: transform, opacity;
+}
