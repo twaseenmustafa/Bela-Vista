@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { AnimatePresence, motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Star } from 'lucide-react';
-import { REVIEWS, CONTACT_INFO, cld } from '../constants';
-import { wrap, swipePower, swipeConfidenceThreshold } from './testimonials/animations';
-import Eyebrow from './Eyebrow';
-import { CURTAIN } from './Parallax';
-import Magnetic from './Magnetic';
+import { REVIEWS, CONTACT_INFO, cld } from '../../constants';
+import { wrap, swipePower, swipeConfidenceThreshold } from './swipe';
+import Eyebrow from '../ui/Eyebrow';
+import { CURTAIN } from '../ui/Parallax';
+import Magnetic from '../ui/Magnetic';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const AVG = (REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length).toFixed(1);

@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import { FEATURES } from '../constants';
-import Eyebrow from './Eyebrow';
-import { Parallax, ParallaxImage, Dim, CURTAIN } from './Parallax';
+import { FEATURES } from '../../constants';
+import Eyebrow from '../ui/Eyebrow';
+import { Parallax, ParallaxImage, Dim, CURTAIN } from '../ui/Parallax';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const LAYOUT = ['md:col-span-7 md:row-span-2', 'md:col-span-5', 'md:col-span-5'];

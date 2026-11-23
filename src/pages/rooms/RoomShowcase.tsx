@@ -2,7 +2,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Button from '../Button';
+import Button from '../../components/ui/Button';
 import { ROOM_DATA } from './roomData';
 import { openBooking } from '../../constants';
 

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GridMotion from './GridMotion';
-import Button from './Button';
-import Eyebrow from './Eyebrow';
-import { Parallax, Dim } from './Parallax';
-import Magnetic from './Magnetic';
-import { cld, PHOTO_PATHS } from '../constants';
+import Button from '../ui/Button';
+import Eyebrow from '../ui/Eyebrow';
+import { Parallax, Dim } from '../ui/Parallax';
+import Magnetic from '../ui/Magnetic';
+import { cld, PHOTO_PATHS } from '../../constants';
 
 const openGallery = () => window.dispatchEvent(new CustomEvent('app-navigate', { detail: { view: 'gallery' } }));
 

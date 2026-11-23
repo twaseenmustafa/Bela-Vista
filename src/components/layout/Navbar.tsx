@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { NAV_LINKS, openBooking as book } from '../constants';
-import Button from './Button';
-import Magnetic from './Magnetic';
+import { NAV_LINKS, openBooking as book } from '../../constants';
+import Button from '../ui/Button';
+import Magnetic from '../ui/Magnetic';
 
 
 interface NavbarProps {

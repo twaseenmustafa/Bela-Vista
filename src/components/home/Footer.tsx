@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { Facebook, Instagram, Twitter, MapPin, Phone, Mail, ArrowUp, ArrowUpRight, MessageCircle } from 'lucide-react';
-import { BOOKING_URL, CONTACT_INFO, NAV_LINKS, cld } from '../constants';
-import Eyebrow from './Eyebrow';
-import Magnetic from './Magnetic';
-import { Parallax, ParallaxImage } from './Parallax';
+import { BOOKING_URL, CONTACT_INFO, NAV_LINKS, cld } from '../../constants';
+import Eyebrow from '../ui/Eyebrow';
+import Magnetic from '../ui/Magnetic';
+import { Parallax, ParallaxImage } from '../ui/Parallax';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const STRIP = [

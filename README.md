@@ -9,10 +9,29 @@ Live: https://bela-vista-pied.vercel.app
 Needs Node.js 18+.
 
 ```bash
-npm install --legacy-peer-deps
+npm install
 npm run dev      # http://localhost:3000
 npm run build    # production build in dist/
 ```
+
+## Structure
+
+```
+src/
+  main.tsx              entry: mounts <App />
+  App.tsx               smooth scroll, hash routing, page switch
+  constants.ts          content: nav, features, reviews, photos, booking link
+  components/
+    layout/             Navbar
+    home/               landing page sections, in page order
+    ui/                 shared pieces: Button, Parallax, Magnetic, Eyebrow
+  pages/
+    Experience.tsx      #/experience
+    Rooms.tsx           #/rooms
+    Gallery.tsx         #/gallery
+```
+
+Stack: React 18, Vite, Tailwind CSS, Framer Motion, GSAP, Lenis.
 
 ## Notes
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from './Button';
+import Button from '../components/ui/Button';
 import { openBooking } from '../constants';
-import ReturnHomeButton from './ReturnHomeButton';
+import ReturnHomeButton from '../components/ui/ReturnHomeButton';
 import RoomsHero from './rooms/RoomsHero';
 import IntroSection from './rooms/IntroSection';
 import RoomShowcase from './rooms/RoomShowcase';

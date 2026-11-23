@@ -1,12 +1,12 @@
 import React, { useLayoutEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import './FullGallery.css';
-import ReturnHomeButton from './ReturnHomeButton';
-import { allImages } from './full-gallery/galleryData';
-import ThreeDGrid from './full-gallery/ThreeDGrid';
-import MapReveal from './full-gallery/MapReveal';
-import StaggeredGrid from './full-gallery/StaggeredGrid';
+import './Gallery.css';
+import ReturnHomeButton from '../components/ui/ReturnHomeButton';
+import { allImages } from './gallery/galleryData';
+import ThreeDGrid from './gallery/ThreeDGrid';
+import MapReveal from './gallery/MapReveal';
+import StaggeredGrid from './gallery/StaggeredGrid';
 
 
 const FullGallery: React.FC = () => {

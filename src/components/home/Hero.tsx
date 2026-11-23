@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, Variants, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
-import Magnetic from './Magnetic';
+import Magnetic from '../ui/Magnetic';
 
 interface HeroProps {
   startAnimation?: boolean;

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import ScrollStack from './ScrollStack';
 import ScrollStackItem from './ScrollStackItem';
-import Eyebrow from './Eyebrow';
-import { Parallax, Dim, CURTAIN } from './Parallax';
+import Eyebrow from '../ui/Eyebrow';
+import { Parallax, Dim, CURTAIN } from '../ui/Parallax';
 
 const VID = 'https://res.cloudinary.com/dshsndiup/video/upload';
 // ~50% lighter than the originals, no audio track (cards are muted anyway).

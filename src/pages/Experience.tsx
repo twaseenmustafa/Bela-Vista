@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
-import Button from './Button';
+import Button from '../components/ui/Button';
 import { openBooking } from '../constants';
-import ReturnHomeButton from './ReturnHomeButton';
+import ReturnHomeButton from '../components/ui/ReturnHomeButton';
 import './Experience.css';
 import ExperienceHero from './experience/ExperienceHero';
 import VideoFeature from './experience/VideoFeature';
