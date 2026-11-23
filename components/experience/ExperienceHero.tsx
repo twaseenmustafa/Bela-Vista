@@ -31,23 +31,19 @@ const ExperienceHero: React.FC = () => {
           <div className="absolute top-0 right-0 w-1/3 h-full bg-gray-100/50 -z-10 hidden md:block"></div>
           
           <div className="max-w-5xl">
-            <span className="block text-gold text-sm md:text-base uppercase tracking-[0.3em] mb-8 font-medium">
+            <span className="block text-gold text-sm md:text-base mb-8 font-medium">
                 The Philosophy
             </span>
             <h1 className="font-serif text-[12vw] md:text-[8vw] text-navy leading-[0.85] tracking-tight mb-12">
                 <div className="exp-hero-text"><span>The Art of</span></div>
-                <div className="exp-hero-text"><span className="italic font-light">Slow Living</span></div>
+                <div className="exp-hero-text"><span className="">Slow Living</span></div>
             </h1>
             
             <div className="hero-line w-0 h-[1px] bg-navy/20 mb-12"></div>
 
             <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-                <p className="font-sans text-gray-500 max-w-md text-sm md:text-base leading-relaxed">
-                    At Bela Vista, we curate moments, not just stays. 
-                    It is a dialogue between the untouched nature of Saint Martin 
-                    and the refined comfort of modern hospitality.
-                </p>
-                <div className="animate-pulse">
+                <p className="font-sans text-gray-500 max-w-md text-sm md:text-base leading-relaxed">We curate moments, not just stays.</p>
+                <div className="">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-navy">
                         <path d="M12 5v14M5 12l7 7 7-7"/>
                     </svg>

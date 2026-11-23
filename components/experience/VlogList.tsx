@@ -49,11 +49,8 @@ const VlogList: React.FC = () => {
           <div className="container mx-auto px-6 md:px-12">
               
               <div className="text-center mb-20">
-                  <span className="text-navy/50 uppercase tracking-widest text-xs font-bold">Curated Collection</span>
+                  <span className="text-navy/50 text-xs font-semibold">Curated Collection</span>
                   <h2 className="font-serif text-3xl md:text-5xl text-navy mt-4">Travel Diaries</h2>
-                  <p className="text-gray-500 mt-4 max-w-xl mx-auto font-sans text-sm">
-                      More stories from our guests. Each journey unique, each memory vibrant.
-                  </p>
               </div>
 
               <div className="flex flex-col gap-24 md:gap-32">
@@ -66,8 +63,8 @@ const VlogList: React.FC = () => {
                               <div className={`relative z-10 ${isReverse ? 'lg:order-2' : 'lg:order-1'}`}>
                                   <div className="vlog-anim inline-block mb-4 overflow-hidden">
                                      <span 
-                                        className="uppercase tracking-[0.25em] text-xs font-bold block"
-                                        style={{ color: vlog.color }}
+                                        className="text-sm font-semibold block text-golddeep"
+                                        
                                      >
                                          {vlog.subtitle}
                                      </span>
@@ -81,13 +78,13 @@ const VlogList: React.FC = () => {
                                   <div className="vlog-anim">
                                       <button 
                                           onClick={() => handleVideoClick(vlog.id)}
-                                          className="group flex items-center gap-3 text-sm font-bold uppercase tracking-widest transition-colors duration-300"
-                                          style={{ color: vlog.color }}
+                                          className="group flex items-center gap-3 text-sm font-semibold text-navy hover:text-golddeep transition-colors duration-300"
+                                          
                                       >
                                           <span>Watch Vlog</span>
                                           <div 
-                                            className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 text-white"
-                                            style={{ backgroundColor: vlog.color }}
+                                            className="w-8 h-8 rounded-full flex items-center justify-center bg-navy text-white transition-all duration-300 group-hover:scale-110 text-white"
+                                            
                                           >
                                               <Play size={12} fill="white" />
                                           </div>
@@ -100,8 +97,8 @@ const VlogList: React.FC = () => {
                                   onClick={() => handleVideoClick(vlog.id)}
                               >
                                   <div 
-                                    className="absolute inset-0 border-4 z-20 transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none rounded-xl"
-                                    style={{ borderColor: vlog.color }}
+                                    className="absolute inset-0 border-4 border-gold z-20 transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none rounded-xl"
+                                    
                                   ></div>
 
                                   <img 
@@ -113,8 +110,8 @@ const VlogList: React.FC = () => {
                                   
                                   <div className="absolute inset-0 flex items-center justify-center z-10">
                                       <div 
-                                        className="w-16 h-16 rounded-full flex items-center justify-center backdrop-blur-md shadow-lg transition-transform duration-300 group-hover:scale-110"
-                                        style={{ backgroundColor: `${vlog.color}CC` }}
+                                        className="w-16 h-16 rounded-full flex items-center justify-center bg-navy/70 backdrop-blur-md shadow-lg transition-transform duration-300 group-hover:scale-110"
+                                        
                                       >
                                           <Play className="w-6 h-6 text-white fill-white ml-1" />
                                       </div>

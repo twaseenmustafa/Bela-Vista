@@ -1,5 +1,5 @@
 import { Waves, Sunset, UtensilsCrossed } from 'lucide-react';
-import { NavLink, Feature, GalleryImage, Review } from './types';
+import { NavLink, Feature, Review } from './types';
 
 export const NAV_LINKS: NavLink[] = [
   { name: 'Home', href: '#hero' },
@@ -8,21 +8,25 @@ export const NAV_LINKS: NavLink[] = [
   { name: 'Gallery', href: '#gallery' },
 ];
 
+// Cloudinary image with on-the-fly format/quality/size.
+export const cld = (path: string, t = 'f_auto,q_auto,w_1400') =>
+  `https://res.cloudinary.com/dshsndiup/image/upload/${t}/${path}`;
+
 export const FEATURES: Feature[] = [
   {
     title: 'Private West Beach',
-    description: 'Located on the serene western coast, offering exclusive access to quiet shores and unobstructed sunset views.',
     icon: Waves,
+    image: cld('v1770210269/572738803_817665804506698_7387560200045857839_n_uofzhs.jpg', 'f_auto,q_auto,w_1600'),
   },
   {
     title: 'Wooden Cottages',
-    description: 'Eco-friendly, artistically designed wooden suites that blend rusticity with modern luxury.',
     icon: Sunset,
+    image: cld('v1770210197/619397337_889079880698623_598201687456560402_n_jizaup.jpg'),
   },
   {
-    title: 'Fresh Seafood BBQ',
-    description: 'Experience our signature beachside BBQ with fresh catch from the Bay of Bengal under the starry sky.',
+    title: 'Seafood BBQ',
     icon: UtensilsCrossed,
+    image: cld('v1770210253/616231183_882220111384600_4095673891837948387_n_xifzlv.jpg'),
   },
 ];
 
@@ -71,31 +75,27 @@ export const REVIEWS: Review[] = [
   },
 ];
 
-export const GALLERY_IMAGES: GalleryImage[] = [
-  {
-    id: '1',
-    url: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1200&auto=format&fit=crop', // Resort Pool/Exterior
-    alt: 'Infinity pool overlooking the ocean',
-    size: 'large',
-  },
-  {
-    id: '2',
-    url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop', // Luxury Interior
-    alt: 'Premium Suite Interior',
-    size: 'tall',
-  },
-  {
-    id: '3',
-    url: 'https://images.unsplash.com/photo-1519708227418-81988761e535?q=80&w=800&auto=format&fit=crop', // Beach Detail
-    alt: 'Private beach lounge area',
-    size: 'small',
-  },
-  {
-    id: '4',
-    url: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=800&auto=format&fit=crop', // Food/Drink
-    alt: 'Signature cocktails at sunset',
-    size: 'small',
-  },
+
+export const BOOKING_URL = 'https://wa.me/8801712097790';
+export const openBooking = () => window.open(BOOKING_URL, '_blank', 'noopener');
+
+// Resort photos on Cloudinary. The promo collage with baked-in text is left out on purpose.
+export const PHOTO_PATHS = [
+  'v1770210316/490695027_658827613723852_3180105066990256892_n_mvq3tm.jpg',
+  'v1770210314/490299037_661672946772652_6917754502023880151_n_j2g5sx.jpg',
+  'v1770210313/470265802_567929742813640_3986908786392581994_n_en6bwy.jpg',
+  'v1770210312/488659378_9652615331513514_1207158668534091051_n_nhdn5y.jpg',
+  'v1770210311/488204218_651172854489328_7838867764146526144_n_zr5bgu.jpg',
+  'v1770210272/572039975_817667477839864_6507293766839302549_n_nyautn.jpg',
+  'v1770210269/572738803_817665804506698_7387560200045857839_n_uofzhs.jpg',
+  'v1770210266/612500669_871556589117619_8069417825920055219_n_yvzfh7.jpg',
+  'v1770210257/612779072_871556415784303_6792620734759867195_n_z97fxb.jpg',
+  'v1770210253/616231183_882220111384600_4095673891837948387_n_xifzlv.jpg',
+  'v1770210224/617108022_886557274284217_8221465207005871057_n_wneeee.jpg',
+  'v1770210219/617437235_886557144284230_2632703659645721925_n_jsawfi.jpg',
+  'v1770210207/617588221_886557254284219_9078444656541115619_n_jokdis.jpg',
+  'v1770210197/619397337_889079880698623_598201687456560402_n_jizaup.jpg',
+  'v1770210192/622371407_889079964031948_1845903599249027941_n_asjfzw.jpg',
 ];
 
 export const CONTACT_INFO = {

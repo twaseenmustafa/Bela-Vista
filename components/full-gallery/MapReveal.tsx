@@ -90,7 +90,7 @@ const MapReveal: React.FC = () => {
                       strokeLinejoin="round"
                   />
                </svg>
-               <div className="absolute inset-0 bg-gold/5 blur-3xl rounded-full scale-75 animate-pulse"></div>
+               <div className="absolute inset-0 bg-gold/5 blur-3xl rounded-full scale-75"></div>
            </div>
         </div>
         

@@ -1,20 +1,21 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Bela Vista Resort
 
-# Run and deploy your AI Studio app
+Website for Bela Vista, a resort of wooden cottages on the West Beach of Saint Martin's Island, Bangladesh.
 
-This contains everything you need to run your app locally.
+Live: https://bela-vista-pied.vercel.app
 
-View your app in AI Studio: https://ai.studio/apps/drive/1qdLJJ-yi2ivIXXvEg20X12Wu97lXM-_L
+## Run locally
 
-## Run Locally
+Needs Node.js 18+.
 
-**Prerequisites:**  Node.js
+```bash
+npm install --legacy-peer-deps
+npm run dev      # http://localhost:3000
+npm run build    # production build in dist/
+```
 
+## Notes
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- Pages are addressed by hash: `#/experience`, `#/rooms`, `#/gallery` (home has no hash).
+- All booking buttons open WhatsApp (`BOOKING_URL` in `constants.ts`).
+- Photos and videos come from Cloudinary with size and quality transforms. The shared photo list is `PHOTO_PATHS` in `constants.ts`.

@@ -28,69 +28,42 @@ const GridMotion: React.FC<GridMotionProps> = ({ items = [], gradientColor = 'bl
   }
 
   useEffect(() => {
-    gsap.ticker.lagSmoothing(0);
-
     const handleMouseMove = (e: MouseEvent) => {
       mouseXRef.current = e.clientX;
     };
 
-    // 1. Mouse Parallax Effect (Existing)
-    // Runs on every tick to update position based on mouse X
+    // 1. Mouse parallax: one reusable quickTo per row instead of a new tween every frame.
+    const maxMoveAmount = 300;
+    const inertiaFactors = [0.6, 0.4, 0.3, 0.2];
+    const movers = rowRefs.current.map((row, index) =>
+      row ? gsap.quickTo(row, 'x', { duration: 0.8 + inertiaFactors[index % inertiaFactors.length], ease: 'power3.out' }) : null
+    );
     const updateParallax = () => {
-      const maxMoveAmount = 300;
-      const baseDuration = 0.8;
-      const inertiaFactors = [0.6, 0.4, 0.3, 0.2];
-
-      rowRefs.current.forEach((row, index) => {
-        if (row) {
-          const direction = index % 2 === 0 ? 1 : -1;
-          const moveAmount = ((mouseXRef.current / window.innerWidth) * maxMoveAmount - maxMoveAmount / 2) * direction;
-
-          // We animate 'x' (pixel transform) for the mouse effect
-          // This is separate from 'xPercent' used for the marquee loop
-          gsap.to(row, {
-            x: moveAmount,
-            duration: baseDuration + inertiaFactors[index % inertiaFactors.length],
-            ease: 'power3.out',
-            overwrite: 'auto'
-          });
-        }
+      movers.forEach((move, index) => {
+        if (!move) return;
+        const direction = index % 2 === 0 ? 1 : -1;
+        move(((mouseXRef.current / window.innerWidth) * maxMoveAmount - maxMoveAmount / 2) * direction);
       });
     };
 
-    // 2. Infinite Marquee Effect (New)
-    // Initializes the continuous loop
-    rowRefs.current.forEach((row, index) => {
-      if (!row) return;
+    // 2. Infinite marquee: even rows drift right, odd rows left.
+    marqueeTweens.current = rowRefs.current.map((row, index) => {
+      if (!row) return null;
+      const isRight = index % 2 === 0;
+      gsap.set(row, { xPercent: isRight ? -50 : 0 });
+      return gsap.to(row, { xPercent: isRight ? 0 : -50, duration: 40 + index * 5, ease: 'none', repeat: -1 });
+    }).filter(Boolean) as gsap.core.Tween[];
 
-      const isRight = index % 2 === 0; // Row 0 (Top) -> Right, Row 1 -> Left, etc.
-      
-      // Right movement: -50% -> 0%
-      // Left movement: 0% -> -50%
-      const start = isRight ? -50 : 0;
-      const end = isRight ? 0 : -50;
-
-      gsap.set(row, { xPercent: start });
-
-      const tween = gsap.to(row, {
-        xPercent: end,
-        duration: 40 + (index * 5), // Slow speed, slightly varied per row
-        ease: "none",
-        repeat: -1,
-      });
-
-      marqueeTweens.current.push(tween);
-    });
-
-    const removeTicker = gsap.ticker.add(updateParallax);
+    gsap.ticker.add(updateParallax);
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      removeTicker();
+      gsap.ticker.remove(updateParallax);
       marqueeTweens.current.forEach(t => t.kill());
+      marqueeTweens.current = [];
     };
-  }, [combinedItems]);
+  }, [items]);
 
   const handleMouseEnter = () => {
     // Pause auto-scroll on hover
@@ -125,6 +98,8 @@ const GridMotion: React.FC<GridMotionProps> = ({ items = [], gradientColor = 'bl
                         style={{
                           backgroundImage: `url(${content})`
                         }}
+                        role="button"
+                        aria-label="Preview photo"
                         onClick={() => onItemClick && onItemClick(content)}
                       ></div>
                     ) : (

@@ -1,212 +1,117 @@
-import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import Experience3DScene from './Experience3DScene';
 
 interface IntroProps {
   onComplete: () => void;
 }
 
-const Intro: React.FC<IntroProps> = ({ onComplete }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const initialLogoRef = useRef<SVGSVGElement>(null);
-  const sceneWrapperRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const textContainerRef = useRef<HTMLDivElement>(null);
-  const [isSkipped, setIsSkipped] = useState(false);
-  const timeline = useRef<gsap.core.Timeline | null>(null);
+const WORD = 'Bela Vista';
+const MIN_MS = 2200; // never flash
+const MAX_MS = 3200; // never stall on slow networks
 
-  // 1. Lock Body Scroll during Intro
+const Intro: React.FC<IntroProps> = ({ onComplete }) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tailRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const exited = useRef(false);
+  const exitRef = useRef<() => void>(() => {});
+  const doneRef = useRef(onComplete);
+  doneRef.current = onComplete;
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    document.body.style.height = '100vh';
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, []);
 
   useLayoutEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const progress = { v: 0 };
+    const render = () => {
+      const v = Math.round(progress.v);
+      if (counterRef.current) counterRef.current.textContent = String(v).padStart(3, '0');
+      if (barRef.current) barRef.current.style.transform = `scaleX(${progress.v / 100})`;
+    };
+
     const ctx = gsap.context(() => {
-      timeline.current = gsap.timeline({
-        onComplete: () => {
-          exitAnimation();
-        }
+      const paths = gsap.utils.toArray<SVGPathElement>('.intro-mark path');
+      paths.forEach(p => {
+        const len = p.getTotalLength();
+        gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
       });
 
-      const initialLogoPaths = initialLogoRef.current?.querySelectorAll('path');
+      gsap.timeline({ defaults: { ease: 'expo.out' } })
+        .to(paths, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', stagger: 0.08 })
+        .from('.intro-char', { yPercent: 110, duration: 1.1, stagger: 0.035 }, 0.25)
+        .from('.intro-fade', { opacity: 0, y: 12, duration: 0.9, stagger: 0.08 }, 0.7);
 
-      // --- INITIAL STATES ---
-      gsap.set(containerRef.current, { yPercent: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 });
-      gsap.set(titleRef.current, { yPercent: 0, opacity: 0 }); 
-      
-      // Subtitle starts down
-      gsap.set(subtitleRef.current, { yPercent: 100, opacity: 0 });
-      
-      // Scene Wrapper starts hidden
-      gsap.set(sceneWrapperRef.current, { opacity: 0, y: 20, scale: 0.95 });
+      // Fake-but-honest progress: eases toward 90 while we wait, completes when ready.
+      gsap.to(progress, { v: 90, duration: MIN_MS / 1000, ease: 'power1.out', onUpdate: render });
+    }, rootRef);
 
-      // Prepare Initial Logo Drawing
-      if (initialLogoPaths) {
-        gsap.set(initialLogoPaths, { 
-          strokeDasharray: (i, target) => target.getTotalLength(),
-          strokeDashoffset: (i, target) => target.getTotalLength(),
-          opacity: 1
-        });
-      }
+    exitRef.current = () => {
+      if (exited.current) return;
+      exited.current = true;
+      gsap.killTweensOf(progress);
+      gsap.timeline()
+        .to(progress, { v: 100, duration: 0.35, ease: 'power2.out', onUpdate: render })
+        .to(contentRef.current, { opacity: 0, y: -24, duration: 0.5, ease: 'power2.in' }, '+=0.1')
+        .add(() => doneRef.current(), '-=0.1')
+        .to(rootRef.current, { yPercent: -100, duration: reduce ? 0.4 : 1.0, ease: 'expo.inOut' }, '<')
+        .fromTo(tailRef.current, { scaleY: 1 }, { scaleY: 0, duration: 1.0, ease: 'power3.inOut' }, '<');
+    };
 
-      // --- ANIMATION SEQUENCE ---
-
-      timeline.current
-        // 1. [0s - 1.5s] Fast Entry: Logo Draws + Title Fades
-        .to(initialLogoPaths, {
-          strokeDashoffset: 0,
-          duration: 1.5,
-          ease: "power2.inOut",
-          stagger: 0.1
-        })
-        .to(titleRef.current, {
-          opacity: 1,
-          duration: 1.0,
-          ease: "power2.out"
-        }, "<+0.3")
-
-        // 2. [1.5s - 2.0s] Short Pause
-        .to({}, { duration: 0.4 })
-
-        // 3. [2.0s - 3.0s] THE SWAP
-        // Initial Logo Fades Out
-        .to(initialLogoRef.current, {
-           opacity: 0,
-           scale: 0.9,
-           duration: 0.6,
-           ease: "power2.in"
-        }, "swap")
-        // Title Slides Up & Out
-        .to(titleRef.current, {
-          yPercent: -150, 
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.inOut"
-        }, "swap")
-        // Subtitle Slides Up & In
-        .to(subtitleRef.current, {
-          yPercent: 0, 
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out"
-        }, "swap+=0.2")
-        // New Scene Appears (Fade Up)
-        .to(sceneWrapperRef.current, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1.5,
-            ease: "power2.out" 
-        }, "swap+=0.1")
-        
-        // 4. Hold to view the Experience (Reduced from 3.5s to 2.0s)
-        .to({}, { duration: 2.0 }); 
-
-    }, containerRef);
+    const loaded = new Promise<void>(res =>
+      document.readyState === 'complete' ? res() : window.addEventListener('load', () => res(), { once: true })
+    );
+    const minWait = new Promise(res => setTimeout(res, reduce ? 300 : MIN_MS));
+    const maxWait = new Promise(res => setTimeout(res, MAX_MS));
+    Promise.race([Promise.all([loaded, document.fonts.ready, minWait]), maxWait]).then(() => exitRef.current());
 
     return () => ctx.revert();
   }, []);
 
-  const exitAnimation = () => {
-    if (!containerRef.current) return;
-    
-    // Kill main timeline to prevent conflicts
-    timeline.current?.kill();
-
-    const exitTl = gsap.timeline({
-      onComplete: onComplete
-    });
-
-    // 1. Fade out content
-    exitTl.to([subtitleRef.current, sceneWrapperRef.current, titleRef.current, initialLogoRef.current], {
-      opacity: 0,
-      y: -20,
-      duration: 0.6,
-      ease: "power2.in"
-    })
-    // 2. Curtain Raise with Curve
-    .to(containerRef.current, {
-      yPercent: -100,
-      duration: 1.2,
-      ease: "power4.inOut",
-    })
-    // 3. Curve Effect
-    .to(containerRef.current, {
-        borderBottomLeftRadius: "50% 15vh", 
-        borderBottomRightRadius: "50% 15vh",
-        duration: 0.8,
-        ease: "power2.in"
-    }, "<0.1"); 
-  };
-
-  const handleSkip = () => {
-    if (isSkipped) return;
-    setIsSkipped(true);
-    exitAnimation();
-  };
-
   return (
-    <div 
-      ref={containerRef} 
-      onClick={handleSkip}
-      className="fixed inset-0 z-[100] w-full h-screen bg-navy flex flex-col items-center justify-center overflow-hidden cursor-pointer"
+    <div
+      ref={rootRef}
+      onClick={() => exitRef.current()}
+      className="fixed inset-0 z-[100] bg-navy text-white cursor-pointer will-change-transform"
+      aria-label="Loading Bela Vista"
     >
-      <div className="flex flex-col items-center justify-center text-center px-6 relative z-10 w-full max-w-4xl h-[60vh]">
-         
-         {/* CONTAINER FOR LOGOS */}
-         <div className="relative w-full h-64 md:h-80 flex items-center justify-center mb-8">
-             
-             {/* 1. INITIAL ABSTRACT LOGO */}
-             <svg 
-                ref={initialLogoRef}
-                viewBox="0 0 200 200" 
-                fill="none" 
-                className="absolute w-32 h-32 md:w-48 md:h-48 drop-shadow-2xl"
-                xmlns="http://www.w3.org/2000/svg"
-             >
-                <path d="M50 100 C 50 60, 150 60, 150 100" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" />
-                <path d="M 20 130 Q 50 110 80 130 T 140 130 T 200 130" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" />
-                <path d="M 85 130 L 85 90 L 115 90 L 115 130" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" />
-                <path d="M 75 90 L 100 65 L 125 90" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-             </svg>
+      {/* Curved trailing edge: shrinks as the curtain lifts */}
+      <div
+        ref={tailRef}
+        className="absolute left-[-10%] top-full w-[120%] h-[16vh] bg-navy rounded-b-[50%] origin-top pointer-events-none"
+      />
 
-             {/* 2. 2D EXPERIENCE SCENE (Replaces 3D) */}
-             <div 
-                ref={sceneWrapperRef}
-                className="absolute w-full h-full opacity-0 flex items-center justify-center"
-             >
-                <Experience3DScene />
-             </div>
+      <div ref={contentRef} className="relative h-full flex flex-col items-center justify-center px-6">
+        <svg viewBox="0 0 200 160" fill="none" className="intro-mark w-20 md:w-24 mb-8" aria-hidden>
+          <path d="M50 100 C 50 60, 150 60, 150 100" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 10 130 Q 40 110 70 130 T 130 130 T 190 130" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 85 130 L 85 92 L 115 92 L 115 130" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M 75 92 L 100 67 L 125 92" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
 
-         </div>
+        <h1 className="font-majestic text-6xl md:text-8xl tracking-wide leading-none overflow-hidden pb-2" aria-label={WORD}>
+          {WORD.split('').map((c, i) => (
+            <span key={i} className="intro-char inline-block whitespace-pre" aria-hidden>{c}</span>
+          ))}
+        </h1>
 
-         {/* Text Container */}
-         <div ref={textContainerRef} className="relative h-24 md:h-32 w-full overflow-hidden flex items-center justify-center">
-             
-             {/* 1. Main Title */}
-             <h1 
-                ref={titleRef}
-                className="absolute font-majestic text-6xl md:text-8xl text-white tracking-wide leading-none"
-             >
-                Bela Vista
-             </h1>
+        <p className="intro-fade mt-6 font-serif italic text-gold/90 text-base md:text-xl tracking-wide text-center">
+          Not about exploration. About experience.
+        </p>
 
-             {/* 2. Secondary Message */}
-             <p 
-                ref={subtitleRef}
-                className="absolute font-serif text-gold text-sm md:text-xl lg:text-2xl tracking-[0.2em] italic font-light leading-relaxed max-w-2xl text-center"
-             >
-                It's not about exploration;<br/>it's about experience.
-             </p>
-
-         </div>
-
+        {/* Bottom meta row */}
+        <div className="absolute bottom-8 inset-x-6 md:inset-x-12 flex items-end justify-between text-xs md:text-sm text-white/60 font-sans">
+          <span className="intro-fade">20.60° N · 92.33° E</span>
+          <span className="intro-fade hidden md:block">Saint Martin's Island</span>
+          <span className="intro-fade tabular-nums text-white/80"><span ref={counterRef}>000</span></span>
+        </div>
+        <div className="absolute bottom-0 inset-x-0 h-px bg-white/10">
+          <div ref={barRef} className="h-full bg-gold origin-left" style={{ transform: 'scaleX(0)' }} />
+        </div>
       </div>
     </div>
   );

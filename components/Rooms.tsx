@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from './Button';
+import { openBooking } from '../constants';
 import ReturnHomeButton from './ReturnHomeButton';
 import RoomsHero from './rooms/RoomsHero';
 import IntroSection from './rooms/IntroSection';
@@ -26,13 +27,12 @@ const Rooms: React.FC = () => {
 
       {/* --- NEXT STEP CTA --- */}
       <section className="h-[70vh] flex flex-col items-center justify-center bg-sand text-center px-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/noise.png')] opacity-40"></div>
           
           <h2 className="font-serif text-5xl md:text-8xl text-navy mb-8 z-10 relative">
-              Ready to <span className="italic text-gold">Unplug?</span>
+              Ready to <span className="text-gold">Unplug?</span>
           </h2>
           <div className="flex flex-col md:flex-row gap-8 z-10 relative items-center">
-             <Button onClick={() => {}} className="bg-navy text-white px-12 py-4 text-lg h-14">Check Availability</Button>
+             <Button onClick={openBooking} className="bg-navy text-white px-12 py-4 text-lg h-14">Check availability</Button>
              <ReturnHomeButton onClick={handleBack} />
           </div>
       </section>

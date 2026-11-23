@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import Button from './Button';
+import { openBooking } from '../constants';
 import ReturnHomeButton from './ReturnHomeButton';
 import './Experience.css';
 import ExperienceHero from './experience/ExperienceHero';
@@ -28,10 +29,10 @@ const Experience: React.FC = () => {
 
       {/* --- FOOTER CTA --- */}
       <section className="py-32 bg-sand text-center px-4">
-          <p className="text-gray-400 uppercase tracking-widest text-xs mb-6">Your Journey Begins</p>
+          <p className="text-gray-400 text-xs mb-6">Your journey begins</p>
           <h2 className="text-5xl md:text-7xl font-serif text-navy mb-12">Bela Vista</h2>
           <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
-              <Button onClick={() => {}} className="bg-navy text-white h-14 w-52">Check Availability</Button>
+              <Button onClick={openBooking} className="bg-navy text-white h-14 w-52">Check availability</Button>
               <ReturnHomeButton onClick={handleBack} />
           </div>
       </section>

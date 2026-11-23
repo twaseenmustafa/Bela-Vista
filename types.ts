@@ -7,16 +7,10 @@ export interface NavLink {
 
 export interface Feature {
   title: string;
-  description: string;
   icon: LucideIcon;
+  image: string;
 }
 
-export interface GalleryImage {
-  id: string;
-  url: string;
-  alt: string;
-  size: 'large' | 'tall' | 'wide' | 'small';
-}
 
 export interface Review {
   author: string;

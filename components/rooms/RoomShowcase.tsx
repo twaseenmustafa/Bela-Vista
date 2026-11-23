@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '../Button';
 import { ROOM_DATA } from './roomData';
+import { openBooking } from '../../constants';
 
 const RoomShowcase: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -97,7 +98,7 @@ const RoomShowcase: React.FC = () => {
                       </div>
                       
                       {room.price && (
-                          <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-xs uppercase tracking-widest font-bold text-navy z-10">
+                          <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-semibold text-navy z-10">
                               {room.price}
                           </div>
                       )}
@@ -105,7 +106,7 @@ const RoomShowcase: React.FC = () => {
 
                   <div className="room-content w-full md:w-1/2 flex flex-col justify-between relative z-10">
                       <div>
-                          <span className="reveal-text block text-gold uppercase tracking-widest text-xs font-bold mb-4">
+                          <span className="reveal-text block text-gold text-xs font-semibold mb-4">
                               0{index + 1} — {room.type}
                           </span>
                           <h2 className="reveal-text font-serif text-4xl md:text-6xl mb-6 leading-tight text-navy">
@@ -128,8 +129,8 @@ const RoomShowcase: React.FC = () => {
 
                           {!room.hideBooking && (
                             <div className="reveal-text">
-                                <Button className="bg-navy text-white hover:bg-gold transition-colors">
-                                    {room.ctaLabel || "Book This Room"}
+                                <Button onClick={openBooking} className="bg-navy text-white hover:bg-gold">
+                                    {room.ctaLabel || "Book this room"}
                                 </Button>
                             </div>
                           )}

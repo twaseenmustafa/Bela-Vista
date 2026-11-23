@@ -34,22 +34,15 @@ const VideoFeature: React.FC = () => {
                   
                   <div className="relative z-10 lg:col-span-4">
                       <div className="inline-block mb-6 overflow-hidden">
-                         <span className="text-gold uppercase tracking-[0.25em] text-xs font-bold block animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                         <span className="text-gold text-sm font-semibold block">
                              Guest Stories
                          </span>
                       </div>
                       <h2 className="font-serif text-4xl md:text-5xl text-navy leading-tight mb-8">
                           A Cinematic <br/> 
-                          <span className="italic font-light text-gold">Immersion</span>
+                          <span className="text-gold">Immersion</span>
                       </h2>
-                      <div className="space-y-6 font-sans text-gray-500 leading-relaxed text-sm md:text-base">
-                          <p>
-                              Words can describe the view, but they cannot capture the feeling of the ocean breeze or the sound of the waves lulling you to sleep.
-                          </p>
-                          <p>
-                              Join <strong>Avijatrik Travel</strong> on a visual journey through Bela Vista. From the rustic charm of our wooden cottages to the breathtaking sunsets of the West Beach, experience the magic before you arrive.
-                          </p>
-                      </div>
+                      <p className="font-sans text-gray-500 text-base">Filmed by Avijatrik Travel at Bela Vista</p>
                   </div>
 
                   <div 
@@ -63,13 +56,13 @@ const VideoFeature: React.FC = () => {
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
                             <div className="relative">
-                                <div className="absolute inset-0 bg-white/30 rounded-full animate-ping opacity-75"></div>
+                                <div className="absolute inset-0 bg-white/30 rounded-full opacity-75"></div>
                                 <div className="relative w-20 h-20 bg-white/20 backdrop-blur-md border border-white/40 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
                                     <Play className="w-8 h-8 text-white fill-white ml-1" />
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute bottom-6 left-6 text-white text-sm font-medium tracking-wide bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
+                        <div className="absolute bottom-6 left-6 text-white text-sm font-medium bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
                             Watch the Vlog
                         </div>
                   </div>

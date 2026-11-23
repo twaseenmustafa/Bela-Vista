@@ -7,7 +7,7 @@ interface ReturnHomeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEle
 const ReturnHomeButton: React.FC<ReturnHomeButtonProps> = ({ 
   onClick, 
   className = '', 
-  label = "Return Home",
+  label = "Back to home",
   ...props 
 }) => {
   return (
@@ -38,7 +38,7 @@ const ReturnHomeButton: React.FC<ReturnHomeButtonProps> = ({
             d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
           ></path>
           <path
-            d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 1 1 45.312 45.312L237.248 512z"
+            d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
           ></path>
         </svg>
       </div>
@@ -48,7 +48,7 @@ const ReturnHomeButton: React.FC<ReturnHomeButtonProps> = ({
         - Pushed right (ml-8) to avoid overlap with the initial icon state
         - Z-index ensures it stays on top of the yellow expansion
       */}
-      <span className="text-xs uppercase tracking-widest font-bold text-navy relative z-20 transition-colors duration-500 ml-8 pointer-events-none">
+      <span className="text-sm font-semibold text-navy relative z-20 transition-colors duration-500 ml-8 pointer-events-none">
         {label}
       </span>
     </button>

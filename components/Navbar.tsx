@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { NAV_LINKS } from '../constants';
+import { NAV_LINKS, openBooking as book } from '../constants';
 import Button from './Button';
+import Magnetic from './Magnetic';
+
 
 interface NavbarProps {
   currentView?: string;
@@ -9,11 +11,16 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ currentView = 'home' }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let last = window.scrollY;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const y = window.scrollY;
+      setIsScrolled(y > 50);
+      // Out of the way while reading down, back as soon as the visitor scrolls up.
+      if (Math.abs(y - last) > 6) { setHidden(y > last && y > 400); last = y; }
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -78,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView = 'home' }) => {
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-[60] transition-all duration-500 ${navBackground}`}>
+    <nav className={`fixed top-0 w-full z-[60] transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${hidden && !isMobileMenuOpen ? '-translate-y-full' : ''} ${navBackground}`}>
       <div className="container mx-auto px-6 h-24 flex items-center justify-between">
         
         {/* Left: Logo */}
@@ -109,14 +116,14 @@ const Navbar: React.FC<NavbarProps> = ({ currentView = 'home' }) => {
         {/* Right: CTA (Custom 3D Button) */}
         <div className="hidden md:flex flex-1 justify-end items-center">
             {/* Custom 3D Button Implementation */}
-            <button 
-                onClick={() => console.log('Book clicked')}
-                className="group relative border-none bg-navy rounded-xl cursor-pointer outline-none font-bold text-sm"
-            >
-                <span className="block box-border border-2 border-navy rounded-xl px-6 py-2.5 bg-gold text-navy transform -translate-y-1 transition-transform duration-100 ease-out group-hover:-translate-y-1.5 group-active:translate-y-0 uppercase tracking-widest text-[11px] font-bold">
-                    Book Now
-                </span>
-            </button>
+            <Magnetic>
+              <button
+                onClick={book}
+                className="bg-gold text-navy px-6 py-3 rounded-full font-sans text-sm font-semibold hover:bg-white active:scale-[0.97] transition-[background-color,transform] shadow-[0_8px_24px_-8px_rgba(212,175,55,0.6)]"
+              >
+                Book now
+              </button>
+            </Magnetic>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -124,6 +131,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentView = 'home' }) => {
           <button 
             className={`${textColor} transition-colors duration-300`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -147,7 +156,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView = 'home' }) => {
             </a>
           ))}
           <div className="flex justify-center">
-             <Button onClick={() => setIsMobileMenuOpen(false)}>Book Now</Button>
+             <Button onClick={() => { setIsMobileMenuOpen(false); book(); }}>Book now</Button>
           </div>
         </div>
       )}

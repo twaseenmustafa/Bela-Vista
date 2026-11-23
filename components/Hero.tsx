@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
+import Magnetic from './Magnetic';
 
 interface HeroProps {
   startAnimation?: boolean;
@@ -18,6 +19,28 @@ const Hero: React.FC<HeroProps> = ({ startAnimation = true }) => {
 
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Scroll depth: the video sinks and swells slowly, the headline lifts away faster and fades.
+  const heroRef = useRef<HTMLElement>(null);
+  const still = useReducedMotion();
+  // Measured from page scroll: a sticky element's own offset never changes, so target-based progress would stay at 0.
+  const { scrollY } = useScroll();
+  const p = useTransform(scrollY, v => Math.min(1, v / window.innerHeight));
+  const dim = useTransform(p, [0, 1], [0, 0.6]);
+  const vidY = useTransform(p, [0, 1], ['0%', still ? '0%' : '-5%']);
+  const vidScale = useTransform(p, [0, 1], [1, still ? 1 : 1.16]);
+  // Headline lines and subline separate as they rise: top line fastest, paragraph slowest.
+  const line1Y = useTransform(p, [0, 1], [0, still ? 0 : -280]);
+  const line2Y = useTransform(p, [0, 1], [0, still ? 0 : -170]);
+  const subY = useTransform(p, [0, 1], [0, still ? 0 : -60]);
+  const textFade = useTransform(p, [0, 0.55], [1, 0]);
+  // The hero stays stuck behind the page; stop decoding video once it is fully covered.
+  useMotionValueEvent(p, 'change', v => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (v >= 1 && !vid.paused) vid.pause();
+    else if (v < 1 && vid.paused) vid.play().catch(() => {});
+  });
 
   // Set initial volume to 50%
   useEffect(() => {
@@ -72,12 +95,12 @@ const Hero: React.FC<HeroProps> = ({ startAnimation = true }) => {
   };
 
   return (
-    <section id="hero" className="relative h-screen min-h-[700px] w-full flex flex-col justify-center overflow-hidden bg-navy">
+    <section ref={heroRef} id="hero" className="sticky top-0 h-screen min-h-[700px] w-full flex flex-col justify-center overflow-hidden bg-navy">
       {/* Background HTML5 Video */}
-      <div className="absolute inset-0 z-0 overflow-hidden select-none bg-navy">
+      <motion.div style={{ y: vidY, scale: vidScale }} className="absolute inset-0 z-0 overflow-hidden select-none bg-navy">
         <video 
           ref={videoRef}
-          className="absolute top-0 left-0 w-full h-full object-cover"
+          className="absolute -top-[14%] left-0 w-full h-[128%] object-cover"
           poster={posterUrl}
           autoPlay 
           muted={isMuted} // Controlled by state
@@ -92,33 +115,45 @@ const Hero: React.FC<HeroProps> = ({ startAnimation = true }) => {
         <div className="absolute inset-0 bg-navy/20 mix-blend-multiply pointer-events-none"></div>
         <div className="absolute inset-0 bg-black/20 pointer-events-none"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80 pointer-events-none"></div>
-      </div>
+      </motion.div>
+
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 text-center pointer-events-none">
+      <motion.div style={{ opacity: textFade }} className="relative z-10 container mx-auto px-6 text-center pointer-events-none">
         <motion.h1 
           className="font-serif text-4xl md:text-6xl lg:text-7xl text-white mb-6 leading-tight drop-shadow-lg"
           variants={containerVariants}
           initial="hidden"
           animate={startAnimation ? "visible" : "hidden"}
         >
-          <span className="block">
-            {line1.split("").map((char, index) => (
-              <motion.span key={index} variants={letterVariants} className="inline-block whitespace-pre">
-                {char}
-              </motion.span>
+          <motion.span style={{ y: line1Y }} className="block">
+            {line1.split(" ").map((word, w) => (
+              // Letters animate one by one, but a word never breaks across lines.
+              <span key={w} className="inline-block whitespace-nowrap">
+                {(w ? " " + word : word).split("").map((char, index) => (
+                  <motion.span key={index} variants={letterVariants} className="inline-block whitespace-pre">
+                    {char}
+                  </motion.span>
+                ))}
+              </span>
             ))}
-          </span>
-          <span className="block">
-            {line2.split("").map((char, index) => (
-              <motion.span key={index} variants={letterVariants} className="inline-block whitespace-pre">
-                {char}
-              </motion.span>
+          </motion.span>
+          <motion.span style={{ y: line2Y }} className="block">
+            {line2.split(" ").map((word, w) => (
+              // Letters animate one by one, but a word never breaks across lines.
+              <span key={w} className="inline-block whitespace-nowrap">
+                {(w ? " " + word : word).split("").map((char, index) => (
+                  <motion.span key={index} variants={letterVariants} className="inline-block whitespace-pre">
+                    {char}
+                  </motion.span>
+                ))}
+              </span>
             ))}
-          </span>
+          </motion.span>
         </motion.h1>
         
         <motion.p 
+          style={{ y: subY }}
           className="text-white/90 font-sans text-sm md:text-lg max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md"
           variants={fadeInUpVariants}
           initial="hidden"
@@ -128,99 +163,41 @@ const Hero: React.FC<HeroProps> = ({ startAnimation = true }) => {
           Escape to the pristine shores of the only coral island in Bangladesh. 
           Experience serenity, refined comfort, and the art of doing nothing.
         </motion.p>
-      </div>
+      </motion.div>
+      <motion.div style={{ opacity: dim }} className="absolute inset-0 bg-black pointer-events-none z-[6]" aria-hidden />
 
-      {/* Custom Switch Button (User Provided) */}
+      {/* Sound toggle */}
       <motion.div
-        className="absolute bottom-12 right-6 z-30 pointer-events-auto origin-bottom-right"
+        className="absolute bottom-10 right-6 md:right-10 z-30"
         initial={{ opacity: 0 }}
         animate={startAnimation ? { opacity: 1 } : { opacity: 0 }}
         transition={{ delay: 2 }}
       >
-        <style>{`
-          .switch {
-            --input-focus: #D4AF37; /* Gold */
-            --bg-color: #fff;
-            --main-color: #0F172A; /* Navy */
-            --input-out-of-focus: #F1F5F9; /* Slate 100 */
-            
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            width: 70px;
-            height: 36px;
-          }
+        <Magnetic>
+          <button
+            onClick={toggleSound}
+            aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+            aria-pressed={!isMuted}
+            className="group flex items-center gap-3 text-white/80 hover:text-white transition-colors"
+          >
+            <span className="hidden md:block font-sans text-xs">{isMuted ? 'Sound off' : 'Sound on'}</span>
+            <span className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center transition-colors group-hover:bg-white group-hover:text-navy">
+              {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+            </span>
+          </button>
+        </Magnetic>
+      </motion.div>
 
-          .toggle {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-          }
-
-          .slider {
-            box-sizing: border-box;
-            border-radius: 100px;
-            border: 2px solid var(--main-color);
-            box-shadow: 4px 4px var(--main-color);
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--input-out-of-focus);
-            transition: 0.3s;
-            overflow: hidden;
-          }
-
-          .knob {
-            box-sizing: border-box;
-            height: 30px;
-            width: 30px;
-            position: absolute;
-            left: 2px;
-            bottom: 1px;
-            border: 2px solid var(--main-color);
-            border-radius: 100px;
-            background-color: var(--bg-color);
-            color: var(--main-color);
-            font-size: 14px;
-            font-weight: 600;
-            text-align: center;
-            line-height: 25px;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .toggle:checked + .slider {
-            background-color: var(--input-focus);
-            transform: translateX(-32px);
-          }
-
-          .toggle:checked + .slider .knob {
-            transform: translateX(32px);
-          }
-        `}</style>
-        
-        <label className="switch" aria-label={isMuted ? "Unmute video" : "Mute video"}>
-          <input 
-            className="toggle" 
-            type="checkbox" 
-            checked={!isMuted} 
-            onChange={toggleSound} 
-          />
-          <span className="slider">
-             <div className="knob">
-               {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-             </div>
-          </span>
-        </label>
+      {/* Scroll cue: a line that fills downward */}
+      <motion.div
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 text-white/70 pointer-events-none"
+        style={{ opacity: textFade }}
+      >
+        <span className="font-sans text-xs">Scroll</span>
+        <span className="relative w-px h-12 bg-white/20 overflow-hidden">
+          <span className="absolute inset-0 bg-white origin-top animate-[cue_2.4s_cubic-bezier(0.65,0,0.35,1)_infinite]" />
+        </span>
+        <style>{`@keyframes cue { 0% { transform: scaleY(0); transform-origin: top } 45% { transform: scaleY(1); transform-origin: top } 55% { transform: scaleY(1); transform-origin: bottom } 100% { transform: scaleY(0); transform-origin: bottom } }`}</style>
       </motion.div>
     </section>
   );
