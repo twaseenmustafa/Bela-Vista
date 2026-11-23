@@ -52,8 +52,8 @@ const Footer: React.FC = () => {
         {/* CTA */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
           <div>
-            <Parallax distance={50}><Eyebrow n="05" label="Stay with us" light /></Parallax>
-            <Parallax distance={-15}>
+            <Parallax distance={16}><Eyebrow n="05" label="Stay with us" light /></Parallax>
+            <Parallax distance={12}>
             <motion.h2
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}

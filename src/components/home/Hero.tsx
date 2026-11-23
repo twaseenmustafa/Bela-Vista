@@ -11,11 +11,11 @@ const Hero: React.FC<HeroProps> = ({ startAnimation = true }) => {
   const line1 = "Where the Bay of Bengal";
   const line2 = "Meets Luxury.";
 
-  // Optimized Video URL
-  const cloudinaryVideoUrl = "https://res.cloudinary.com/dshsndiup/video/upload/q_auto,f_auto/v1770185509/Bela_Vista_Resort_Saint_Martin_-_Avijatrik_Travel_1080p_h264_eqn5vk.mp4";
+  // 720p H.264 (~24 MB, ~1.5 Mbps): the 1080p f_auto source was a 46 MB VP9 file that stalled on first load.
+  const cloudinaryVideoUrl = "https://res.cloudinary.com/dshsndiup/video/upload/q_auto:eco,vc_h264,w_1280,c_limit/v1770185509/Bela_Vista_Resort_Saint_Martin_-_Avijatrik_Travel_1080p_h264_eqn5vk.mp4";
   
   // Poster Image
-  const posterUrl = "https://res.cloudinary.com/dshsndiup/video/upload/so_0,q_auto,f_auto/v1770185509/Bela_Vista_Resort_Saint_Martin_-_Avijatrik_Travel_1080p_h264_eqn5vk.jpg";
+  const posterUrl = "https://res.cloudinary.com/dshsndiup/video/upload/so_0,q_auto,f_auto,w_1600,c_limit/v1770185509/Bela_Vista_Resort_Saint_Martin_-_Avijatrik_Travel_1080p_h264_eqn5vk.jpg";
 
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -26,21 +26,38 @@ const Hero: React.FC<HeroProps> = ({ startAnimation = true }) => {
   // Measured from page scroll: a sticky element's own offset never changes, so target-based progress would stay at 0.
   const { scrollY } = useScroll();
   const p = useTransform(scrollY, v => Math.min(1, v / window.innerHeight));
-  const dim = useTransform(p, [0, 1], [0, 0.6]);
-  const vidY = useTransform(p, [0, 1], ['0%', still ? '0%' : '-5%']);
-  const vidScale = useTransform(p, [0, 1], [1, still ? 1 : 1.16]);
-  // Headline lines and subline separate as they rise: top line fastest, paragraph slowest.
-  const line1Y = useTransform(p, [0, 1], [0, still ? 0 : -280]);
-  const line2Y = useTransform(p, [0, 1], [0, still ? 0 : -170]);
-  const subY = useTransform(p, [0, 1], [0, still ? 0 : -60]);
+  const dim = useTransform(p, [0, 1], [0, 0.35]);
+  const vidY = useTransform(p, [0, 1], ['0%', still ? '0%' : '-3%']);
+  const vidScale = useTransform(p, [0, 1], [1, still ? 1 : 1.05]);
+  // Headline lines separate gently as they rise: top line a little faster than the rest.
+  const line1Y = useTransform(p, [0, 1], [0, still ? 0 : -110]);
+  const line2Y = useTransform(p, [0, 1], [0, still ? 0 : -80]);
+  const subY = useTransform(p, [0, 1], [0, still ? 0 : -50]);
   const textFade = useTransform(p, [0, 0.55], [1, 0]);
-  // The hero stays stuck behind the page; stop decoding video once it is fully covered.
-  useMotionValueEvent(p, 'change', v => {
+  // The hero stays stuck behind the page. Pause only once it is well covered, resume with margin,
+  // so small scrolls around the edge never toggle playback.
+  useMotionValueEvent(scrollY, 'change', y => {
     const vid = videoRef.current;
     if (!vid) return;
-    if (v >= 1 && !vid.paused) vid.pause();
-    else if (v < 1 && vid.paused) vid.play().catch(() => {});
+    const vh = window.innerHeight;
+    if (y > vh * 1.5 && !vid.paused) vid.pause();
+    else if (y < vh * 1.2 && vid.paused) vid.play().catch(() => {});
   });
+
+  // Autoplay needs the muted *property* set before play(); retry once data arrives and when the tab returns.
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.muted = true;
+    const tryPlay = () => { if (vid.paused && window.scrollY < window.innerHeight * 1.2) vid.play().catch(() => {}); };
+    tryPlay();
+    vid.addEventListener('canplay', tryPlay);
+    document.addEventListener('visibilitychange', tryPlay);
+    return () => {
+      vid.removeEventListener('canplay', tryPlay);
+      document.removeEventListener('visibilitychange', tryPlay);
+    };
+  }, []);
 
   // Set initial volume to 50%
   useEffect(() => {

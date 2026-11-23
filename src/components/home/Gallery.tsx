@@ -39,15 +39,15 @@ const Gallery: React.FC = () => {
   }, [selectedImage]);
 
   return (
-    <section id="gallery" className="pt-24 md:pt-32 pb-40 md:pb-48 bg-navy relative overflow-hidden border-t border-white/5">
+    <section id="gallery" className="pt-24 md:pt-32 pb-28 md:pb-32 bg-navy relative overflow-hidden border-t border-white/5">
       <Dim />
       {/* Background Gradient overlay handled by GridMotion */}
       
       <div className="container mx-auto px-6 relative z-10 pointer-events-none mb-8">
         <div className="flex flex-col md:flex-row justify-between items-end">
             <div>
-                <Parallax distance={50}><Eyebrow n="03" label="Visual story" light /></Parallax>
-                <Parallax distance={-15}><h2 className="font-serif text-5xl md:text-6xl text-white leading-[1.05] mt-5">Glimpses of <span className="text-gold">paradise</span></h2></Parallax>
+                <Parallax distance={16}><Eyebrow n="03" label="Visual story" light /></Parallax>
+                <Parallax distance={12}><h2 className="font-serif text-5xl md:text-6xl text-white leading-[1.05] mt-5">Glimpses of <span className="text-gold">paradise</span></h2></Parallax>
             </div>
             <div className="hidden md:block pointer-events-auto">
                 <Magnetic><Button variant="outline" onClick={openGallery}>View all photos</Button></Magnetic>
@@ -55,7 +55,7 @@ const Gallery: React.FC = () => {
         </div>
       </div>
 
-      <Parallax distance={50} className="relative w-full">
+      <Parallax distance={20} className="relative w-full">
          <GridMotion 
             items={ITEMS} 
             gradientColor="#0F172A" 

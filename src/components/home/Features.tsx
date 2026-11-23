@@ -12,9 +12,8 @@ const Features: React.FC = () => {
   const still = useReducedMotion();
   // 0 when the section's bottom reaches the viewport bottom, 1 when it leaves the top.
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ['end end', 'end start'] });
-  const y = useTransform(p, [0, 1], [0, still ? 0 : -140]);
-  const scale = useTransform(p, [0, 1], [1, still ? 1 : 0.9]);
-  const fade = useTransform(p, [0.2, 0.9], [1, 0.25]);
+  const y = useTransform(p, [0, 1], [0, still ? 0 : -40]);
+  const scale = useTransform(p, [0, 1], [1, still ? 1 : 0.97]);
 
   return (
   <motion.section ref={ref} id="experience" className={`relative z-10 bg-sand py-24 md:py-32 rounded-t-[40px] md:rounded-t-[56px] shadow-[0_-24px_60px_-12px_rgba(0,0,0,0.35)]`}>
@@ -22,8 +21,8 @@ const Features: React.FC = () => {
     <div className="relative container mx-auto px-6">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
         <div>
-          <Parallax distance={50}><Eyebrow n="01" label="The experience" /></Parallax>
-          <Parallax distance={-15}>
+          <Parallax distance={16}><Eyebrow n="01" label="The experience" /></Parallax>
+          <Parallax distance={12}>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -37,7 +36,7 @@ const Features: React.FC = () => {
         </div>
       </div>
 
-      <motion.div style={{ y, scale, opacity: fade }} className="origin-top grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-4 md:gap-5 md:h-[min(78vh,760px)]">
+      <motion.div style={{ y, scale }} className="origin-top grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-4 md:gap-5 md:h-[min(78vh,760px)]">
         {FEATURES.map((f, i) => (
           <motion.article
             key={f.title}

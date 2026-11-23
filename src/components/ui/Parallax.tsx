@@ -10,7 +10,7 @@ export const Parallax: React.FC<{
   offset?: Offset;
   className?: string;
   children: React.ReactNode;
-}> = ({ distance = 60, offset = ['start end', 'end start'] as Offset, className, children }) => {
+}> = ({ distance = 24, offset = ['start end', 'end start'] as Offset, className, children }) => {
   const ref = useRef<HTMLDivElement>(null);
   const still = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset });
@@ -19,7 +19,8 @@ export const Parallax: React.FC<{
 };
 
 // Shade that deepens as its section scrolls away, so the next section reads as rising over it.
-export const Dim: React.FC<{ max?: number }> = ({ max = 0.6 }) => {
+// Kept light: a heavy shade read as washed-out grey cards rather than depth.
+export const Dim: React.FC<{ max?: number }> = ({ max = 0.18 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['end end', 'end start'] });
   const opacity = useTransform(scrollYProgress, [0, 1], [0, max]);
@@ -34,10 +35,10 @@ export const ParallaxImage: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> 
   const ref = useRef<HTMLDivElement>(null);
   const still = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], still ? ['0%', '0%'] : ['-8%', '8%']);
+  const y = useTransform(scrollYProgress, [0, 1], still ? ['0%', '0%'] : ['-6%', '6%']);
   return (
     <div ref={ref} className="absolute inset-0 overflow-hidden">
-      <motion.img {...(img as object)} style={{ y, scale: 1.18 }} className={`w-full h-full object-cover ${className}`} />
+      <motion.img {...(img as object)} style={{ y, scale: 1.14 }} className={`w-full h-full object-cover ${className}`} />
     </div>
   );
 };

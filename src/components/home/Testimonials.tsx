@@ -25,14 +25,14 @@ const Testimonials: React.FC = () => {
   const idx = wrap(0, REVIEWS.length, page);
   const review = REVIEWS[idx];
 
-  // Parallax depth: photo drifts slowest, the title column next, the quote fastest.
+  // Parallax depth, capped well inside the section padding so nothing leaves its box.
   const ref = useRef<HTMLElement>(null);
   const still = useReducedMotion();
   const { scrollYProgress: p } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const d = (a: number, b: number) => (still ? [0, 0] : [a, b]);
-  const bgY = useTransform(p, [0, 1], d(-90, 90));
-  const leftY = useTransform(p, [0, 1], d(140, -80));
-  const rightY = useTransform(p, [0, 1], d(240, -140));
+  const bgY = useTransform(p, [0, 1], d(-60, 60));
+  const leftY = useTransform(p, [0, 1], d(30, -30));
+  const rightY = useTransform(p, [0, 1], d(50, -50));
   const reveal = useTransform(p, [0.05, 0.35], [0, 1]);
 
   const paginate = useCallback((d: number) => setPage(([p]) => [p + d, d]), []);
@@ -42,7 +42,7 @@ const Testimonials: React.FC = () => {
   return (
     <section
       ref={ref}
-      className={`relative z-20 bg-navy text-white py-24 md:py-36 overflow-hidden ${CURTAIN}`}
+      className={`relative z-20 bg-navy text-white pt-24 md:pt-36 pb-12 md:pb-16 overflow-hidden ${CURTAIN}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

@@ -10,7 +10,6 @@ import FullGallery from './pages/Gallery';
 import Experience from './pages/Experience';
 import Intro from './components/home/Intro';
 import Rooms from './pages/Rooms';
-import ScrollProgress from './components/ui/ScrollProgress';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -124,7 +123,6 @@ function App() {
       {showIntro && <Intro onComplete={handleIntroComplete} />}
 
       <Navbar currentView={currentView} />
-      <ScrollProgress />
       
       <main>
         {currentView === 'home' && (

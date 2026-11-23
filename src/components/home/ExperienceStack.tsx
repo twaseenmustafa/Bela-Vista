@@ -57,11 +57,11 @@ const StackVideo: React.FC<{ id: string }> = ({ id }) => {
 
 const ExperienceStack: React.FC = () => (
   <section className={`relative z-30 bg-sand ${CURTAIN}`}>
-    <Dim max={0.5} />
+    <Dim />
     <div className="relative container mx-auto px-6 pt-24 md:pt-32 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div>
-        <Parallax distance={50}><Eyebrow n="04" label="Moments" /></Parallax>
-        <Parallax distance={-15}><h2 className="font-serif text-5xl md:text-7xl text-navy leading-[1.02] mt-5">
+        <Parallax distance={16}><Eyebrow n="04" label="Moments" /></Parallax>
+        <Parallax distance={12}><h2 className="font-serif text-5xl md:text-7xl text-navy leading-[1.02] mt-5">
           Unforgettable <span className="text-golddeep">moments</span>
         </h2></Parallax>
       </div>
