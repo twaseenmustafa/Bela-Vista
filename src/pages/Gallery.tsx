@@ -26,7 +26,7 @@ const FullGallery: React.FC = () => {
       
       {/* Intro Section */}
       <div className="min-h-screen flex flex-col items-center justify-center relative text-center px-4 pt-20">
-        <h1 className="font-serif text-5xl md:text-8xl mb-6 text-white leading-[0.9]">
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-8xl mb-6 text-white leading-[0.9]">
           Visual <br/> <span className="text-gold">Symphony</span>
         </h1>
         <p className="text-gray-400 text-xs md:text-sm max-w-md mx-auto leading-relaxed">

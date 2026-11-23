@@ -1,3 +1,4 @@
+
 /* Scoped variables for the gallery page to prevent global leaks */
 .full-gallery-page {
   --color-text: #fff;
@@ -21,8 +22,18 @@
 /* Responsive adjustment for mobile to maximize space */
 @media screen and (max-width: 768px) {
   .full-gallery-page {
-    --grid-max-width: 90vw;
-    --grid-gap: 1rem;
+    --grid-max-width: 90vw; /* Almost full width on mobile */
+    --grid-gap: 2rem;
+    --grid-columns: 1; /* Force 1 column on mobile */
+  }
+  
+  /* Reduce Marquee text size on mobile */
+  .full-gallery-page .mark__inner span {
+    font-size: 3rem !important;
+  }
+  
+  .full-gallery-page .mark__inner {
+      gap: 1.5rem;
   }
 }
 

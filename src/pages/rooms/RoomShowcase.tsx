@@ -18,7 +18,7 @@ const RoomShowcase: React.FC = () => {
 
             if (section && imgContainer && content) {
                 // Parallax on image container (Standard)
-                if (index !== 2) {
+                if (index !== 2 && window.innerWidth > 768) { // parallax is desktop-only; saves work on phones
                      gsap.fromTo(imgContainer, 
                         { yPercent: -5 },
                         { 
@@ -43,7 +43,7 @@ const RoomShowcase: React.FC = () => {
                     ease: "power3.out",
                     scrollTrigger: {
                         trigger: section,
-                        start: "top 60%",
+                        start: "top 70%",
                     }
                 });
             }
@@ -79,14 +79,14 @@ const RoomShowcase: React.FC = () => {
   }, []);
 
   return (
-      <div ref={containerRef} className="rooms-container pb-20">
+      <div ref={containerRef} className="rooms-container pb-10 md:pb-20">
           {ROOM_DATA.map((room, index) => (
               <section 
                 key={room.id} 
                 id={`room-section-${index}`}
-                className={`min-h-screen py-24 px-6 md:px-20 flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-stretch gap-12 md:gap-24 relative`}
+                className={`min-h-[90vh] md:min-h-screen py-12 md:py-24 px-6 md:px-20 flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-stretch gap-12 md:gap-24 relative`}
               >
-                  <div className="w-full md:w-1/2 min-h-[50vh] md:h-[80vh] relative group h-full z-10">
+                  <div className="w-full md:w-1/2 min-h-[40vh] md:h-[80vh] relative group h-full z-10">
                       <div className="room-img-container w-full h-full relative overflow-hidden rounded-lg">
                          <div className="room-img-wrapper w-full h-full">
                             <img 
@@ -109,10 +109,10 @@ const RoomShowcase: React.FC = () => {
                           <span className="reveal-text block text-gold text-xs font-semibold mb-4">
                               0{index + 1} — {room.type}
                           </span>
-                          <h2 className="reveal-text font-serif text-4xl md:text-6xl mb-6 leading-tight text-navy">
+                          <h2 className="reveal-text font-serif text-3xl md:text-6xl mb-4 md:mb-6 leading-tight text-navy">
                               {room.name}
                           </h2>
-                          <p className="reveal-text font-sans text-gray-600 leading-relaxed mb-10 max-w-md">
+                          <p className="reveal-text font-sans text-gray-600 leading-relaxed mb-6 md:mb-10 max-w-md text-sm md:text-base">
                               {room.description}
                           </p>
                       </div>
@@ -120,8 +120,8 @@ const RoomShowcase: React.FC = () => {
                       <div>
                           <div className={`reveal-text grid grid-cols-2 gap-4 border-t border-navy/10 pt-8 ${room.hideBooking ? '' : 'mb-10'}`}>
                               {room.features.map((feature, i) => (
-                                  <div key={i} className="flex items-center space-x-2 text-sm text-navy/80">
-                                      <div className="w-1.5 h-1.5 bg-gold rounded-full"></div>
+                                  <div key={i} className="flex items-center space-x-2 text-xs md:text-sm text-navy/80">
+                                      <div className="w-1.5 h-1.5 bg-gold rounded-full shrink-0"></div>
                                       <span>{feature}</span>
                                   </div>
                               ))}
@@ -129,7 +129,7 @@ const RoomShowcase: React.FC = () => {
 
                           {!room.hideBooking && (
                             <div className="reveal-text">
-                                <Button onClick={openBooking} className="bg-navy text-white hover:bg-gold">
+                                <Button onClick={openBooking} className="bg-navy text-white hover:bg-gold w-full md:w-auto">
                                     {room.ctaLabel || "Book this room"}
                                 </Button>
                             </div>

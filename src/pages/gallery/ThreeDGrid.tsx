@@ -13,60 +13,115 @@ const ThreeDGrid: React.FC<ThreeDGridProps> = ({ images }) => {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Top 3D Grid Animation
-      const gridImages = gsap.utils.toArray('.grid-main .grid__item-imgwrap') as HTMLElement[];
-      
-      const isLeftSide = (element: HTMLElement) => {
-          const elementCenter = element.getBoundingClientRect().left + element.offsetWidth / 2;
-          const viewportCenter = window.innerWidth / 2;
-          return elementCenter < viewportCenter;
-      };
+      const mm = gsap.matchMedia();
 
-      if (gridImages.length > 0) {
-          gridImages.forEach(imageWrap => {
-              const imgEl = imageWrap.querySelector('.grid__item-img');
-              const leftSide = isLeftSide(imageWrap);
+      // --- DESKTOP ANIMATION (> 768px) ---
+      mm.add("(min-width: 769px)", () => {
+          const gridImages = gsap.utils.toArray('.grid-main .grid__item-imgwrap') as HTMLElement[];
+          
+          const isLeftSide = (element: HTMLElement) => {
+              const elementCenter = element.getBoundingClientRect().left + element.offsetWidth / 2;
+              const viewportCenter = window.innerWidth / 2;
+              return elementCenter < viewportCenter;
+          };
 
-              gsap.timeline({
-                  scrollTrigger: {
-                      trigger: imageWrap,
-                      start: 'top bottom+=10%',
-                      end: 'bottom top-=25%',
-                      scrub: true,
+          if (gridImages.length > 0) {
+              gridImages.forEach(imageWrap => {
+                  const imgEl = imageWrap.querySelector('.grid__item-img');
+                  const leftSide = isLeftSide(imageWrap);
+
+                  gsap.timeline({
+                      scrollTrigger: {
+                          trigger: imageWrap,
+                          start: 'top bottom+=10%',
+                          end: 'bottom top-=25%',
+                          scrub: true,
+                      }
+                  })
+                  .from(imageWrap, {
+                      startAt: { filter: 'blur(0px) brightness(100%) contrast(100%)' },
+                      z: 300,
+                      rotateX: 70,
+                      rotateZ: leftSide ? 5 : -5,
+                      xPercent: leftSide ? -40 : 40,
+                      skewX: leftSide ? -20 : 20,
+                      yPercent: 100,
+                      filter: 'blur(7px) brightness(0%) contrast(400%)',
+                      ease: 'sine',
+                  })
+                  .to(imageWrap, {
+                      z: 300,
+                      rotateX: -50,
+                      rotateZ: leftSide ? -1 : 1,
+                      xPercent: leftSide ? -20 : 20,
+                      skewX: leftSide ? 10 : -10,
+                      filter: 'blur(4px) brightness(0%) contrast(500%)',
+                      ease: 'sine.in',
+                  })
+                  .from(imgEl, {
+                      scaleY: 1.8,
+                      ease: 'sine',
+                  }, 0)
+                  .to(imgEl, {
+                      scaleY: 1.8,
+                      ease: 'sine.in'
+                  }, '>');
+              });
+          }
+      });
+
+      // --- MOBILE ANIMATION (<= 768px) ---
+      mm.add("(max-width: 768px)", () => {
+          const gridImages = gsap.utils.toArray('.grid-main .grid__item-imgwrap') as HTMLElement[];
+          
+          if (gridImages.length > 0) {
+              gridImages.forEach(imageWrap => {
+                  const imgEl = imageWrap.querySelector('.grid__item-img');
+
+                  // Simple Fade & Scale Up for better mobile performance and layout
+                  gsap.fromTo(imageWrap, 
+                    {
+                      opacity: 0,
+                      scale: 0.9,
+                      y: 50,
+                      filter: 'blur(5px)'
+                    },
+                    {
+                      opacity: 1,
+                      scale: 1,
+                      y: 0,
+                      filter: 'blur(0px)',
+                      duration: 0.8,
+                      ease: 'power2.out',
+                      scrollTrigger: {
+                          trigger: imageWrap,
+                          start: 'top 85%',
+                          toggleActions: 'play none none reverse'
+                      }
+                    }
+                  );
+                  
+                  // Gentle Image Parallax inside container
+                  if (imgEl) {
+                      gsap.fromTo(imgEl,
+                        { scale: 1.2, yPercent: -10 },
+                        { 
+                            yPercent: 10,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: imageWrap,
+                                start: 'top bottom',
+                                end: 'bottom top',
+                                scrub: true
+                            }
+                        }
+                      );
                   }
-              })
-              .from(imageWrap, {
-                  startAt: { filter: 'blur(0px) brightness(100%) contrast(100%)' },
-                  z: 300,
-                  rotateX: 70,
-                  rotateZ: leftSide ? 5 : -5,
-                  xPercent: leftSide ? -40 : 40,
-                  skewX: leftSide ? -20 : 20,
-                  yPercent: 100,
-                  filter: 'blur(7px) brightness(0%) contrast(400%)',
-                  ease: 'sine',
-              })
-              .to(imageWrap, {
-                  z: 300,
-                  rotateX: -50,
-                  rotateZ: leftSide ? -1 : 1,
-                  xPercent: leftSide ? -20 : 20,
-                  skewX: leftSide ? 10 : -10,
-                  filter: 'blur(4px) brightness(0%) contrast(500%)',
-                  ease: 'sine.in',
-              })
-              .from(imgEl, {
-                  scaleY: 1.8,
-                  ease: 'sine',
-              }, 0)
-              .to(imgEl, {
-                  scaleY: 1.8,
-                  ease: 'sine.in'
-              }, '>');
-          });
-      }
+              });
+          }
+      });
 
-      // 2. Marquee Animation
+      // --- MARQUEE (Global) ---
       if (marqueeRef.current) {
           gsap.timeline({
               scrollTrigger: {
